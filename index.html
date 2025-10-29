@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Inscripción - CJI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="left">
+      <div class="content">
+        <h1>Centro Jurídico <span>Internacional</span></h1>
+        <p>Inscríbete ahora y accede a nuestros cursos y servicios. Pago seguro con PayU (sandbox).</p>
+      </div>
+      <div class="dots">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+    </div>
+
+    <div class="right">
+      <h2>Inscríbase ya</h2>
+      <p class="sub">Déjanos tus datos y te contactaremos</p>
+
+      <form id="formulario">
+        <div class="row">
+          <input type="text" name="nombre" placeholder="Nombre" required>
+          <input type="text" name="apellido" placeholder="Apellido" required>
+        </div>
+        <input type="email" name="correo" placeholder="Correo electrónico" required>
+        <input type="tel" name="telefono" placeholder="Teléfono" required>
+
+        <select id="tipoPersona" name="tipoPersona" required>
+          <option value="" disabled selected>Seleccione tipo de cliente</option>
+          <option value="natural">Persona natural</option>
+          <option value="empresa">Empresa</option>
+        </select>
+
+        <div id="campoUbicacion">
+          <select id="ubicacion" name="ubicacion" required>
+            <option value="" disabled selected>Seleccione ubicación</option>
+            <option value="bogota">Bogotá</option>
+            <option value="fuera">Fuera de Bogotá</option>
+          </select>
+        </div>
+
+        <p id="precio" class="precio"></p>
+
+        <!-- Campo oculto del vendedor (llenado por JS desde la URL) -->
+        <input type="hidden" id="vendedor" name="vendedor" value="sin_vendedor">
+
+        <div class="checkbox">
+          <input type="checkbox" id="politica" required>
+          <label for="politica">Acepto la <a href="#">política de privacidad</a></label>
+        </div>
+
+        <button type="button" id="btnPayu">Pagar con PayU (Sandbox)</button>
+      </form>
+
+      <!-- Formulario oculto que se enviará al gateway de PayU -->
+      <form id="formPayu" method="POST" action="https://sandbox.checkout.payulatam.com/ppp-web-gateway-payu/" style="display:none;">
+        <input name="merchantId" type="hidden" value="" />
+        <input name="accountId" type="hidden" value="" />
+        <input name="description" type="hidden" value="Pago de formulario CJI" />
+        <input name="referenceCode" type="hidden" id="referenceCode" value="" />
+        <input name="amount" type="hidden" id="amount" value="" />
+        <input name="tax" type="hidden" value="0" />
+        <input name="taxReturnBase" type="hidden" value="0" />
+        <input name="currency" type="hidden" value="COP" />
+        <input name="signature" type="hidden" id="signature" value="" />
+        <input name="buyerEmail" type="hidden" id="buyerEmail" value="" />
+        <input name="extra1" type="hidden" id="extra1" value="" />
+        <input name="extra2" type="hidden" id="extra2" value="" />
+
+        <!-- PayU aceptará estas URLs; las ponemos desde JS para incluir ?vendedor=... -->
+        <input name="responseUrl" type="hidden" id="responseUrl" value="" />
+        <input name="confirmationUrl" type="hidden" id="confirmationUrl" value="" />
+      </form>
+
+    </div>
+  </div>
+
+  <!-- CryptoJS MD5 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <!-- Tu JS -->
+  <script src="script.js"></script>
+</body>
+</html>
