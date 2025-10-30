@@ -109,14 +109,14 @@ btnPayu.addEventListener('click', () => {
   const formData = new FormData(form);
 
   const nombre = formData.get('nombre');
-  const apellido = formData.get('apellido');
+  const empresa = formData.get('empresa'); // ← Nuevo campo
   const correo = formData.get('correo');
   const telefono = formData.get('telefono');
   const tipo = document.getElementById('tipoPersona').value;
   const ubi = document.getElementById('ubicacion').value || 'N/A';
   const vendedor = document.getElementById('vendedor').value || 'sin_vendedor';
 
-  if (!nombre || !apellido || !correo || !telefono) {
+  if (!nombre || !correo || !telefono) {
     alert('Por favor completa todos los campos antes de continuar.');
     return;
   }
@@ -148,6 +148,13 @@ btnPayu.addEventListener('click', () => {
   inputExtra3.name = 'extra3';
   inputExtra3.value = telefono;
   payuForm.appendChild(inputExtra3);
+
+  // Enviar nombre de empresa como extra4
+  const inputExtra4 = document.createElement('input');
+  inputExtra4.type = 'hidden';
+  inputExtra4.name = 'extra4';
+  inputExtra4.value = empresa;
+  payuForm.appendChild(inputExtra4);
 
   // === APPS SCRIPT URL (RESPONSE/CONFIRMATION) ===
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz12l7iPYTuI3xIonugnZA-l4Y_4NotZTKp7BKn-c81CUeLKzV3qfZI3qoNSs10BBqiVA/exec";
