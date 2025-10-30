@@ -69,57 +69,56 @@ document.addEventListener('DOMContentLoaded', () => {
   if (inputTelefono) inputTelefono.placeholder = 'Ingrese su número de celular';
 
   // ------------------- PRECIO / VISIBILIDAD / EMPRESA enable/disable -------------------
-  function actualizarPrecio() {
-    let precio = null;
+ function actualizarPrecio() {
+  let precio = null;
+  const campoEmpresa = document.getElementById('campoEmpresa');
+  const inputEmpresa = document.getElementById('empresa');
 
-    if (tipoPersona && tipoPersona.value === 'natural') {
-      // Ocultar ubicación (tu lógica previa)
-      campoUbicacion?.classList.add('oculto');
-      ubicacion?.removeAttribute('required');
-      if (ubicacion) ubicacion.value = '';
+  if (tipoPersona && tipoPersona.value === 'natural') {
+    // Ocultar ubicación
+    campoUbicacion?.classList.add('oculto');
+    ubicacion?.removeAttribute('required');
+    if (ubicacion) ubicacion.value = '';
 
-      // Empresa: deshabilitar y no requerida
-      if (inputEmpresa) {
-        inputEmpresa.value = '';
-        inputEmpresa.disabled = true;
-        inputEmpresa.removeAttribute('required');
-      }
+    // Ocultar campo Empresa
+    campoEmpresa?.classList.add('oculto');
+    inputEmpresa?.removeAttribute('required');
+    inputEmpresa.value = '';
 
-      // Precio persona natural
-      precio = 846983;
-    } else if (tipoPersona && tipoPersona.value === 'empresa') {
-      // Mostrar ubicación (tu lógica previa)
-      campoUbicacion?.classList.remove('oculto');
-      ubicacion?.setAttribute('required', 'required');
+    // Precio persona natural
+    precio = 846983;
+  } else if (tipoPersona && tipoPersona.value === 'empresa') {
+    // Mostrar ubicación
+    campoUbicacion?.classList.remove('oculto');
+    ubicacion?.setAttribute('required', 'required');
 
-      // Empresa: habilitar y requerida
-      if (inputEmpresa) {
-        inputEmpresa.disabled = false;
-        inputEmpresa.setAttribute('required', 'required');
-      }
+    // Mostrar campo Empresa y hacerlo requerido
+    campoEmpresa?.classList.remove('oculto');
+    inputEmpresa?.setAttribute('required', 'required');
 
-      // Precio según ubicación
-      if (ubicacion) {
-        if (ubicacion.value === 'bogota') precio = 763000;
-        else if (ubicacion.value === 'fuera') precio = 769000;
-      }
-    }
-
-    // Pintar precio y dataset del botón
-    if (precio !== null) {
-      precioTexto.textContent = `Precio: $${precio.toLocaleString('es-CO')}`;
-      if (btnPayu) {
-        btnPayu.textContent = `Pagar $${precio.toLocaleString('es-CO')} con PayU (Sandbox)`;
-        btnPayu.dataset.valor = String(precio);
-      }
-    } else {
-      precioTexto.textContent = '';
-      if (btnPayu) {
-        btnPayu.textContent = 'Pagar con PayU (Sandbox)';
-        btnPayu.dataset.valor = '';
-      }
+    // Precio según ubicación
+    if (ubicacion) {
+      if (ubicacion.value === 'bogota') precio = 763000;
+      else if (ubicacion.value === 'fuera') precio = 769000;
     }
   }
+
+  // Mostrar precio
+  if (precio !== null) {
+    precioTexto.textContent = `Precio: $${precio.toLocaleString('es-CO')}`;
+    if (btnPayu) {
+      btnPayu.textContent = `Pagar $${precio.toLocaleString('es-CO')} con PayU (Sandbox)`;
+      btnPayu.dataset.valor = String(precio);
+    }
+  } else {
+    precioTexto.textContent = '';
+    if (btnPayu) {
+      btnPayu.textContent = 'Pagar con PayU (Sandbox)';
+      btnPayu.dataset.valor = '';
+    }
+  }
+}
+
 
   tipoPersona?.addEventListener('change', actualizarPrecio);
   ubicacion?.addEventListener('change', actualizarPrecio);

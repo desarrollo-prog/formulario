@@ -196,6 +196,21 @@ select:focus {
   display: none;
 }
 
+
+
+
+#campoEmpresa.oculto {
+  display: none;
+}
+
+#campoEmpresa {
+  transition: all 0.3s ease;
+}
+
+
+
+
+
 /* RESPONSIVO */
 @media (max-width: 900px) {
   .container {
