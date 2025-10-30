@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const tipoPersona = document.getElementById('tipoPersona');
   const ubicacion = document.getElementById('ubicacion');
   const campoUbicacion = document.getElementById('campoUbicacion');
+  const campoEmpresa = document.getElementById('campoEmpresa');
   const precioTexto = document.getElementById('precio');
   const btnPayu = document.getElementById('btnPayu');
 
@@ -52,73 +53,60 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputEmpresa  = document.getElementById('empresa');
   const inputTelefono = document.getElementById('telefono');
 
-  // Actualizar etiquetas si existen
-  const setLabelText = (forId, text) => {
-    const label = document.querySelector(`label[for="${forId}"]`);
-    if (label) label.textContent = text;
-  };
-  setLabelText('nombre',  'Ingrese su nombre completo');
-  setLabelText('correo',  'Ingrese su correo electrónico');
-  setLabelText('empresa', 'Ingrese el nombre de su empresa');
-  setLabelText('telefono','Ingrese su número de celular');
-
   // Placeholders
   if (inputNombre)   inputNombre.placeholder   = 'Ingrese su nombre completo';
   if (inputCorreo)   inputCorreo.placeholder   = 'Ingrese su correo electrónico';
   if (inputEmpresa)  inputEmpresa.placeholder  = 'Ingrese el nombre de su empresa';
   if (inputTelefono) inputTelefono.placeholder = 'Ingrese su número de celular';
 
-  // ------------------- PRECIO / VISIBILIDAD / EMPRESA enable/disable -------------------
- function actualizarPrecio() {
-  let precio = null;
-  const campoEmpresa = document.getElementById('campoEmpresa');
-  const inputEmpresa = document.getElementById('empresa');
+  // ------------------- PRECIO / VISIBILIDAD -------------------
+  function actualizarPrecio() {
+    let precio = null;
 
-  if (tipoPersona && tipoPersona.value === 'natural') {
-    // Ocultar ubicación
-    campoUbicacion?.classList.add('oculto');
-    ubicacion?.removeAttribute('required');
-    if (ubicacion) ubicacion.value = '';
+    if (tipoPersona && tipoPersona.value === 'natural') {
+      // Ocultar ubicación
+      campoUbicacion?.classList.add('oculto');
+      ubicacion?.removeAttribute('required');
+      if (ubicacion) ubicacion.value = '';
 
-    // Ocultar campo Empresa
-    campoEmpresa?.classList.add('oculto');
-    inputEmpresa?.removeAttribute('required');
-    inputEmpresa.value = '';
+      // Ocultar campo Empresa
+      campoEmpresa?.classList.remove('mostrar');
+      inputEmpresa?.removeAttribute('required');
+      inputEmpresa.value = '';
 
-    // Precio persona natural
-    precio = 846983;
-  } else if (tipoPersona && tipoPersona.value === 'empresa') {
-    // Mostrar ubicación
-    campoUbicacion?.classList.remove('oculto');
-    ubicacion?.setAttribute('required', 'required');
+      // Precio persona natural
+      precio = 846983;
+    } else if (tipoPersona && tipoPersona.value === 'empresa') {
+      // Mostrar ubicación
+      campoUbicacion?.classList.remove('oculto');
+      ubicacion?.setAttribute('required', 'required');
 
-    // Mostrar campo Empresa y hacerlo requerido
-    campoEmpresa?.classList.remove('oculto');
-    inputEmpresa?.setAttribute('required', 'required');
+      // Mostrar campo Empresa
+      campoEmpresa?.classList.add('mostrar');
+      inputEmpresa?.setAttribute('required', 'required');
 
-    // Precio según ubicación
-    if (ubicacion) {
-      if (ubicacion.value === 'bogota') precio = 763000;
-      else if (ubicacion.value === 'fuera') precio = 769000;
+      // Precio según ubicación
+      if (ubicacion) {
+        if (ubicacion.value === 'bogota') precio = 763000;
+        else if (ubicacion.value === 'fuera') precio = 769000;
+      }
+    }
+
+    // Mostrar precio
+    if (precio !== null) {
+      precioTexto.textContent = `Precio: $${precio.toLocaleString('es-CO')}`;
+      if (btnPayu) {
+        btnPayu.textContent = `Pagar $${precio.toLocaleString('es-CO')} con PayU (Sandbox)`;
+        btnPayu.dataset.valor = String(precio);
+      }
+    } else {
+      precioTexto.textContent = '';
+      if (btnPayu) {
+        btnPayu.textContent = 'Pagar con PayU (Sandbox)';
+        btnPayu.dataset.valor = '';
+      }
     }
   }
-
-  // Mostrar precio
-  if (precio !== null) {
-    precioTexto.textContent = `Precio: $${precio.toLocaleString('es-CO')}`;
-    if (btnPayu) {
-      btnPayu.textContent = `Pagar $${precio.toLocaleString('es-CO')} con PayU (Sandbox)`;
-      btnPayu.dataset.valor = String(precio);
-    }
-  } else {
-    precioTexto.textContent = '';
-    if (btnPayu) {
-      btnPayu.textContent = 'Pagar con PayU (Sandbox)';
-      btnPayu.dataset.valor = '';
-    }
-  }
-}
-
 
   tipoPersona?.addEventListener('change', actualizarPrecio);
   ubicacion?.addEventListener('change', actualizarPrecio);
@@ -181,7 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---- Form que se envía a PayU ----
     const payuForm = document.getElementById('formPayu');
 
-    // Helper para setear valores por id
     const setValue = (id, value) => {
       const el = document.getElementById(id);
       if (el) el.value = value;
@@ -194,10 +181,11 @@ document.addEventListener('DOMContentLoaded', () => {
     setValue('extra1', tipo);
     setValue('extra2', ubi);
 
-    // Limpiar duplicados por reintentos y crear extra3/extra4 (TEL/EMPRESA)
+    // Limpiar duplicados y crear extra3/extra4
     ['extra3', 'extra4'].forEach((name) => {
       payuForm.querySelectorAll(`input[name="${name}"]`).forEach((el) => el.remove());
     });
+
     const inputExtra3 = document.createElement('input'); // teléfono
     inputExtra3.type = 'hidden';
     inputExtra3.name = 'extra3';
@@ -210,14 +198,14 @@ document.addEventListener('DOMContentLoaded', () => {
     inputExtra4.value = empresa;
     payuForm.appendChild(inputExtra4);
 
-    // URL de respuesta/confirmación (tu Apps Script)
+    // URLs de respuesta y confirmación
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwkS3hN8NizdZeBMJ6seJhMZ4WEqxj-ZJqXMjP03or67gs5yXiT_osmAm3s9MvUpSfJRA/exec';
     const responseUrl = `${APPS_SCRIPT_URL}?vendedor=${encodeURIComponent(vendedor)}`;
     const confirmationUrl = `${APPS_SCRIPT_URL}?vendedor=${encodeURIComponent(vendedor)}`;
     setValue('responseUrl', responseUrl);
     setValue('confirmationUrl', confirmationUrl);
 
-    // Merchant/Account (por si están en blanco en el HTML)
+    // Merchant/Account (por si están vacíos)
     const setByName = (name, value) => {
       const el = payuForm.querySelector(`input[name="${name}"]`);
       if (el) el.value = value;
@@ -225,7 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setByName('merchantId', merchantId);
     setByName('accountId', accountId);
 
-    // Evitar doble envío por doble click
     btnPayu.disabled = true;
     payuForm.submit();
   });
