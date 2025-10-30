@@ -3,7 +3,7 @@ function md5(string) {
   return CryptoJS.MD5(string).toString();
 }
 
-// ------------------- SLIDER (igual que antes) -------------------
+// ------------------- SLIDER -------------------
 const left = document.querySelector('.left');
 const dots = document.querySelectorAll('.dot');
 
@@ -76,14 +76,19 @@ tipoPersona.addEventListener('change', actualizarPrecio);
 ubicacion.addEventListener('change', actualizarPrecio);
 
 // ------------------- DETECTAR ID DEL VENDEDOR EN LA URL -------------------
-// Soporta ?vendedor=vendedor1 y ?vendedor1
+// Soporta ?vendedor=vendedor1 y ?vendedor1 (sin "=")
 function detectVendedorFromURL() {
-  const params = new URLSearchParams(window.location.search);
+  const query = window.location.search.toLowerCase();
+
+  // Caso 1: ?vendedor=vendedor2
+  const params = new URLSearchParams(query);
   if (params.has('vendedor')) return params.get('vendedor');
 
-  // Si no tiene "=", puede venir así: ?vendedor1
-  const raw = window.location.search.replace(/^\?/, '');
-  if (/^vendedor\d+/i.test(raw)) return raw;
+  // Caso 2: ?vendedor2 (sin "=")
+  const match = query.match(/\?vendedor(\d+)/i);
+  if (match) return `vendedor${match[1]}`;
+
+  // Si no hay nada, devolver "sin_vendedor"
   return 'sin_vendedor';
 }
 
@@ -128,21 +133,26 @@ btnPayu.addEventListener('click', () => {
   const rawSignature = `${apiKey}~${merchantId}~${referenceCode}~${amount}~${currency}`;
   const signature = md5(rawSignature);
 
-  // Rellenar formulario oculto
+  // Rellenar formulario oculto PayU
   const payuForm = document.getElementById('formPayu');
   document.getElementById('referenceCode').value = referenceCode;
   document.getElementById('amount').value = amount;
   document.getElementById('signature').value = signature;
   document.getElementById('buyerEmail').value = correo;
-  document.getElementById('extra1').value = tipo;      // opcional: tipo
-  document.getElementById('extra2').value = ubi;       // opcional: ubicación
+  document.getElementById('extra1').value = tipo; // tipoPersona
+  document.getElementById('extra2').value = ubi;  // ubicación
+
+  // Enviar teléfono como extra3
+  const inputExtra3 = document.createElement('input');
+  inputExtra3.type = 'hidden';
+  inputExtra3.name = 'extra3';
+  inputExtra3.value = telefono;
+  payuForm.appendChild(inputExtra3);
 
   // === APPS SCRIPT URL (RESPONSE/CONFIRMATION) ===
-  // ---------- CAMBIA ESTO POR TU URL /exec ----------
-  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyYlZAZunN8YbwSdWOvn1Ath4tpbINEvV1v17EwUolffWn-brkpJa2ddR2mQBctwmxB/exec";
-  // -------------------------------------------------
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz12l7iPYTuI3xIonugnZA-l4Y_4NotZTKp7BKn-c81CUeLKzV3qfZI3qoNSs10BBqiVA/exec";
 
-  // PayU mandará un POST a estas URLs; incluimos vendedor en query param
+  // PayU mandará un POST a estas URLs; incluimos vendedor
   const responseUrl = `${APPS_SCRIPT_URL}?vendedor=${encodeURIComponent(vendedor)}`;
   const confirmationUrl = `${APPS_SCRIPT_URL}?vendedor=${encodeURIComponent(vendedor)}`;
 
@@ -153,7 +163,7 @@ btnPayu.addEventListener('click', () => {
   payuForm.querySelector('input[name="merchantId"]').value = merchantId;
   payuForm.querySelector('input[name="accountId"]').value = accountId;
 
-  // Enviar al gateway (sandbox)
+  // Enviar al gateway PayU Sandbox
   document.body.appendChild(payuForm);
   payuForm.submit();
 });
