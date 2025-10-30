@@ -157,7 +157,7 @@ btnPayu.addEventListener('click', () => {
   payuForm.appendChild(inputExtra4);
 
   // === APPS SCRIPT URL (RESPONSE/CONFIRMATION) ===
-  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz12l7iPYTuI3xIonugnZA-l4Y_4NotZTKp7BKn-c81CUeLKzV3qfZI3qoNSs10BBqiVA/exec";
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwkS3hN8NizdZeBMJ6seJhMZ4WEqxj-ZJqXMjP03or67gs5yXiT_osmAm3s9MvUpSfJRA/exec";
 
   // PayU mandará un POST a estas URLs; incluimos vendedor
   const responseUrl = `${APPS_SCRIPT_URL}?vendedor=${encodeURIComponent(vendedor)}`;
