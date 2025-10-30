@@ -46,24 +46,66 @@ document.addEventListener('DOMContentLoaded', () => {
   const precioTexto = document.getElementById('precio');
   const btnPayu = document.getElementById('btnPayu');
 
-  // ------------------- PRECIO Y VISIBILIDAD -------------------
+  // Inputs
+  const inputNombre   = document.getElementById('nombre');
+  const inputCorreo   = document.getElementById('correo');
+  const inputEmpresa  = document.getElementById('empresa');
+  const inputTelefono = document.getElementById('telefono');
+
+  // Actualizar etiquetas si existen
+  const setLabelText = (forId, text) => {
+    const label = document.querySelector(`label[for="${forId}"]`);
+    if (label) label.textContent = text;
+  };
+  setLabelText('nombre',  'Ingrese su nombre completo');
+  setLabelText('correo',  'Ingrese su correo electrónico');
+  setLabelText('empresa', 'Ingrese el nombre de su empresa');
+  setLabelText('telefono','Ingrese su número de celular');
+
+  // Placeholders
+  if (inputNombre)   inputNombre.placeholder   = 'Ingrese su nombre completo';
+  if (inputCorreo)   inputCorreo.placeholder   = 'Ingrese su correo electrónico';
+  if (inputEmpresa)  inputEmpresa.placeholder  = 'Ingrese el nombre de su empresa';
+  if (inputTelefono) inputTelefono.placeholder = 'Ingrese su número de celular';
+
+  // ------------------- PRECIO / VISIBILIDAD / EMPRESA enable/disable -------------------
   function actualizarPrecio() {
     let precio = null;
 
     if (tipoPersona && tipoPersona.value === 'natural') {
+      // Ocultar ubicación (tu lógica previa)
       campoUbicacion?.classList.add('oculto');
       ubicacion?.removeAttribute('required');
       if (ubicacion) ubicacion.value = '';
+
+      // Empresa: deshabilitar y no requerida
+      if (inputEmpresa) {
+        inputEmpresa.value = '';
+        inputEmpresa.disabled = true;
+        inputEmpresa.removeAttribute('required');
+      }
+
+      // Precio persona natural
       precio = 846983;
     } else if (tipoPersona && tipoPersona.value === 'empresa') {
+      // Mostrar ubicación (tu lógica previa)
       campoUbicacion?.classList.remove('oculto');
       ubicacion?.setAttribute('required', 'required');
+
+      // Empresa: habilitar y requerida
+      if (inputEmpresa) {
+        inputEmpresa.disabled = false;
+        inputEmpresa.setAttribute('required', 'required');
+      }
+
+      // Precio según ubicación
       if (ubicacion) {
         if (ubicacion.value === 'bogota') precio = 763000;
         else if (ubicacion.value === 'fuera') precio = 769000;
       }
     }
 
+    // Pintar precio y dataset del botón
     if (precio !== null) {
       precioTexto.textContent = `Precio: $${precio.toLocaleString('es-CO')}`;
       if (btnPayu) {
@@ -105,17 +147,16 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Validación nativa del formulario (muestra qué falta)
+    // Validación nativa del formulario
     const form = document.getElementById('formulario');
     if (form && !form.reportValidity()) return;
 
     const formData = new FormData(form);
-    const nombre = formData.get('nombre'); // por si lo necesitas a futuro
-    const empresa = formData.get('empresa') || '';
-    const correo = formData.get('correo') || '';
-    const telefono = formData.get('telefono') || '';
-    const tipo = tipoPersona?.value || '';
-    const ubi = ubicacion?.value || 'N/A';
+    const empresa  = (formData.get('empresa')  || '').toString();
+    const correo   = (formData.get('correo')   || '').toString();
+    const telefono = (formData.get('telefono') || '').toString();
+    const tipo     = tipoPersona?.value || '';
+    const ubi      = ubicacion?.value || 'N/A';
     const vendedor = inputVendedor?.value || 'sin_vendedor';
 
     // Verificar CryptoJS
@@ -141,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---- Form que se envía a PayU ----
     const payuForm = document.getElementById('formPayu');
 
-    // Campos obligatorios
+    // Helper para setear valores por id
     const setValue = (id, value) => {
       const el = document.getElementById(id);
       if (el) el.value = value;
