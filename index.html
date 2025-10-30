@@ -27,26 +27,14 @@
       <h2>Inscríbase ya</h2>
       <p class="sub">Déjanos tus datos y te contactaremos</p>
 
-      <form id="formulario">
-  <div class="row">
-    <input 
-      type="text" 
-      id="nombre" 
-      name="nombre" 
-      placeholder="Ingrese su nombre completo" 
-      required
-    >
-  </div>
-
-  <!-- Campo EMPRESA oculto por defecto -->
-  <div id="campoEmpresa" class="oculto">
-    <input 
-      type="text" 
-      id="empresa" 
-      name="empresa" 
-      placeholder="Ingrese el nombre de su empresa"
-    >
-  </div>
+    <form id="formulario">
+  <input 
+    type="text" 
+    id="nombre" 
+    name="nombre" 
+    placeholder="Ingrese su nombre completo" 
+    required
+  >
 
   <input 
     type="email" 
@@ -70,6 +58,16 @@
     <option value="empresa">Empresa</option>
   </select>
 
+  <!-- Campo EMPRESA (debajo de tipo de cliente) -->
+  <div id="campoEmpresa" class="oculto">
+    <input 
+      type="text" 
+      id="empresa" 
+      name="empresa" 
+      placeholder="Ingrese el nombre de su empresa"
+    >
+  </div>
+
   <div id="campoUbicacion">
     <select id="ubicacion" name="ubicacion" required>
       <option value="" disabled selected>Seleccione ubicación</option>
@@ -89,6 +87,7 @@
 
   <button type="button" id="btnPayu">Pagar con PayU (Sandbox)</button>
 </form>
+
 
 
 
