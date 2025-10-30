@@ -139,7 +139,7 @@ btnPayu.addEventListener('click', () => {
 
   // === APPS SCRIPT URL (RESPONSE/CONFIRMATION) ===
   // ---------- CAMBIA ESTO POR TU URL /exec ----------
-  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxxtig2mZa4koBNrsIgmVev1ObMn7OHjdWKms7OIcFWC4P_qiRhdyKDZ5OtJZ1mcqTAzw/exec";
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyYlZAZunN8YbwSdWOvn1Ath4tpbINEvV1v17EwUolffWn-brkpJa2ddR2mQBctwmxB/exec";
   // -------------------------------------------------
 
   // PayU mandará un POST a estas URLs; incluimos vendedor en query param
