@@ -40,17 +40,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ------------------- ELEMENTOS DEL FORM -------------------
-  const tipoPersona   = document.getElementById('tipoPersona');
-  const ubicacion     = document.getElementById('ubicacion');
-  const campoUbicacion= document.getElementById('campoUbicacion');
-  const campoEmpresa  = document.getElementById('campoEmpresa');
-  const precioTexto   = document.getElementById('precio');
-  const btnPayu       = document.getElementById('btnPayu');
+  const tipoPersona    = document.getElementById('tipoPersona');
+  const ubicacion      = document.getElementById('ubicacion');
+  const campoUbicacion = document.getElementById('campoUbicacion');
+  const campoEmpresa   = document.getElementById('campoEmpresa');
+  const precioTexto    = document.getElementById('precio');
+  const btnPayu        = document.getElementById('btnPayu');
 
-  const inputNombre   = document.getElementById('nombre');
-  const inputCorreo   = document.getElementById('correo');
-  const inputEmpresa  = document.getElementById('empresa');
-  const inputTelefono = document.getElementById('telefono');
+  const inputNombre    = document.getElementById('nombre');
+  const inputCorreo    = document.getElementById('correo');
+  const inputEmpresa   = document.getElementById('empresa');
+  const inputTelefono  = document.getElementById('telefono');
 
   // Placeholders (por si el HTML no los trae)
   if (inputNombre)   inputNombre.placeholder   = 'Ingrese su nombre completo';
@@ -154,12 +154,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (form && !form.reportValidity()) return;
 
       const formData = new FormData(form);
-      const empresa  = (formData.get('empresa')  || '').toString();
-      const correo   = (formData.get('correo')   || '').toString();
-      const telefono = (formData.get('telefono') || '').toString();
-      const tipo     = tipoPersona?.value || '';
-      const ubi      = ubicacion?.value || 'N/A';
-      const vendedor = inputVendedor?.value || 'sin_vendedor';
+      const empresa   = (formData.get('empresa')  || '').toString();
+      const correo    = (formData.get('correo')   || '').toString();
+      const telefono  = (formData.get('telefono') || '').toString();
+      const tipo      = tipoPersona?.value || '';
+      const ubi       = ubicacion?.value || 'N/A';
+      const vendedor  = inputVendedor?.value || 'sin_vendedor';
 
       // Verificar CryptoJS
       if (typeof CryptoJS === 'undefined' || !CryptoJS.MD5) {
@@ -213,22 +213,22 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // *** IMPORTANTE ***
-      // Enviar EMPRESA por extra3 (este SÍ llega al Apps Script con más fiabilidad)
+      // Enviar EMPRESA + TELÉFONO dentro de extra3 como JSON (confiable)
       const ex3 = document.createElement('input');
       ex3.type = 'hidden';
       ex3.name = 'extra3';
-      ex3.value = empresa;   // EMPRESA -> extra3
+      ex3.value = JSON.stringify({ empresa, telefono }); // 👈 ambos aquí
       payuForm.appendChild(ex3);
 
-      // Teléfono por extra4 (opcional; úsalo solo si lo necesitas)
+      // (Opcional) extra4 = teléfono (por si llega, pero no dependemos de él)
       const ex4 = document.createElement('input');
       ex4.type = 'hidden';
       ex4.name = 'extra4';
-      ex4.value = telefono;  // TEL -> extra4
+      ex4.value = telefono;
       payuForm.appendChild(ex4);
 
-      // URLs de respuesta/confirmación (Apps Script)
-      const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFMje-l-m466uMDlYq99Rmzcbst0m8i97fLn7n9WrKXzzS4IIsBv-azuvje9szjPzvrg/exec';
+      // URLs de respuesta/confirmación (Apps Script) — usa tu endpoint actual
+      const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzS1RFbdfRCWTOKWlJJjkodAV7figCyCiqtjMsRiYDZ_72eEfw9jxJPt9C_I2CQ9aR9Jg/exec';
       ensureHiddenInput(payuForm, 'responseUrl', 'responseUrl').value = `${APPS_SCRIPT_URL}?vendedor=${encodeURIComponent(vendedor)}`;
       ensureHiddenInput(payuForm, 'confirmationUrl', 'confirmationUrl').value = `${APPS_SCRIPT_URL}?vendedor=${encodeURIComponent(vendedor)}`;
 
