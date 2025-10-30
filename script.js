@@ -173,4 +173,4 @@ btnPayu.addEventListener('click', () => {
   // Enviar al gateway PayU Sandbox
   document.body.appendChild(payuForm);
   payuForm.submit();
-});
+}) ;
