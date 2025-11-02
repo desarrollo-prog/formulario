@@ -149,7 +149,15 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Validación nativa del formulario
+      // ✅ Pol&iacute;tica de privacidad obligatoria (doble validación UX)
+      const chkPolitica = document.getElementById('politica');
+      if (chkPolitica && !chkPolitica.checked) {
+        alert('Debes aceptar la política de privacidad para continuar.');
+        chkPolitica.focus();
+        return;
+      }
+
+      // Validación nativa del formulario (incluye required del checkbox)
       const form = document.getElementById('formulario');
       if (form && !form.reportValidity()) return;
 
