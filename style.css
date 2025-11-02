@@ -329,3 +329,46 @@ button{ padding:12px 18px; border-radius:14px; }
     padding: 8px;
   }
 }
+
+
+
+/* ===== Overrides slider: imagen cuadrada + dots sutiles ===== */
+
+/* Cuadrado 1:1, altura compacta */
+.slider-modern{
+  aspect-ratio: 1 / 1;   /* antes 16/9 */
+  min-height: 280px;     /* ajusta si quieres más/menos alto */
+  padding: 8px;          /* menos marco */
+}
+
+/* La imagen sigue sin recortes */
+.slider-img{
+  object-fit: contain;
+  border-radius: 12px;   /* opcional: quita si la quieres totalmente cuadrada sin esquinas redondeadas */
+}
+
+/* Contenedor de dots más discreto */
+.slider-dots{
+  bottom: 10px;
+  gap: 6px;
+  padding: 4px 6px;
+  background: rgba(255,255,255,.5);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  border: 1px solid rgba(255,255,255,.65);
+  box-shadow: 0 6px 16px rgba(0,0,0,.06);
+}
+
+/* Dots pequeños y sutiles */
+.slider-dots .dot{
+  width: 7px;         /* antes 10px */
+  height: 7px;
+  background: #cfd8dc;
+  opacity: .9;
+  transform: none;    /* sin agrandar tanto en hover */
+}
+.slider-dots .dot:hover{ transform: scale(1.05); }
+.slider-dots .dot.active{
+  background: var(--brand);
+  opacity: 1;
+}
