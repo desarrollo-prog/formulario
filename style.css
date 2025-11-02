@@ -1,3 +1,5 @@
+/* ======= CSS NUEVO FORMULARIO (tal cual) ======= */
+
 /* =========================
    Variables y reset
    ========================= */
@@ -183,48 +185,34 @@ button[disabled]{ opacity:.6; cursor:not-allowed; filter:grayscale(.2); }
   input[type="text"], input[type="email"], input[type="tel"], select{ margin-bottom:12px; }
 }
 
-
-
-
-
 /* ===== Overrides para compactar altura ===== */
 body{ padding:16px 12px; }
-
 .container{ border-radius:12px; box-shadow: var(--shadow-md); }
-
-.left{
-  min-height:320px;         /* antes ~460px */
-  padding:28px;             /* antes 56px */
-}
+.left{ min-height:320px; padding:28px; }
 .right{ padding:22px; }
 .right h2{ margin:0 0 6px; }
 .right .sub{ margin:6px 0 14px; }
-
 form{ padding:16px; border-radius:16px; }
-
 .row{ gap:8px; }
 
 input[type="text"],
 input[type="email"],
 input[type="tel"],
 select{
-  padding:12px 14px 12px 40px;  /* era 14px/44px */
-  margin-bottom:10px;           /* era 14px */
-  border-radius:12px;           /* era 16px */
+  padding:12px 14px 12px 40px;
+  margin-bottom:10px;
+  border-radius:12px;
   font-size:14px;
 }
 
 #campoEmpresa.mostrar{ max-height:90px; }
-
 .precio{ margin:4px 0 12px; }
-
 .checkbox{ margin:8px 0 16px; }
 
 button{
   padding:12px 18px;
   border-radius:14px;
 }
-
 
 /* ====== ALERTAS MODERNAS CENTRADAS ====== */
 .alerta-modal {
@@ -273,4 +261,3 @@ button{
   from { transform: scale(0.9); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
-
