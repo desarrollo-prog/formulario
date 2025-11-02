@@ -8,18 +8,14 @@
 </head>
 <body>
   <div class="container">
-    <div class="left">
-     <!--
-      <div class="content">
-        <h1>Centro Jurídico <span>Internacional</span></h1>
-        <p>Inscríbete ahora y accede a nuestros cursos y servicios. Pago seguro con PayU (sandbox).</p>
-      </div>
-      -->
-      <div class="dots">
-        <div class="dot active"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
+    <!-- Slider moderno SIN recortes -->
+    <div class="left slider-modern">
+      <img class="slider-img" src="img/slider1.jpeg" alt="Slide 1" loading="eager" />
 
+      <div class="slider-dots" aria-label="Cambiar imagen del slider">
+        <button class="dot active" aria-label="Imagen 1"></button>
+        <button class="dot" aria-label="Imagen 2"></button>
+        <button class="dot" aria-label="Imagen 3"></button>
       </div>
     </div>
 
@@ -27,87 +23,84 @@
       <h2>Inscríbase ya</h2>
       <p class="sub">Déjanos tus datos y te contactaremos</p>
 
-    <form id="formulario">
-  <input 
-    type="text" 
-    id="nombre" 
-    name="nombre" 
-    placeholder="Ingrese su nombre completo" 
-    required
-  >
+      <form id="formulario">
+        <input 
+          type="text" 
+          id="nombre" 
+          name="nombre" 
+          placeholder="Ingrese su nombre completo" 
+          required
+        >
 
-  <input 
-    type="email" 
-    id="correo" 
-    name="correo" 
-    placeholder="Ingrese su correo electrónico" 
-    required
-  >
+        <input 
+          type="email" 
+          id="correo" 
+          name="correo" 
+          placeholder="Ingrese su correo electrónico" 
+          required
+        >
 
-  <input 
-    type="tel" 
-    id="telefono" 
-    name="telefono" 
-    placeholder="Ingrese su número de celular" 
-    required
-  >
+        <input 
+          type="tel" 
+          id="telefono" 
+          name="telefono" 
+          placeholder="Ingrese su número de celular" 
+          required
+        >
 
-  <select id="tipoPersona" name="tipoPersona" required>
-    <option value="" disabled selected>Seleccione tipo de cliente</option>
-    <option value="natural">Persona natural</option>
-    <option value="empresa">Empresa</option>
-  </select>
+        <select id="tipoPersona" name="tipoPersona" required>
+          <option value="" disabled selected>Seleccione tipo de cliente</option>
+          <option value="natural">Persona natural</option>
+          <option value="empresa">Empresa</option>
+        </select>
 
-  <!-- Campo EMPRESA (debajo de tipo de cliente) -->
-  <div id="campoEmpresa" class="oculto">
-    <input 
-      type="text" 
-      id="empresa" 
-      name="empresa" 
-      placeholder="Ingrese el nombre de su empresa"
-    >
-  </div>
+        <!-- Campo EMPRESA (debajo de tipo de cliente) -->
+        <div id="campoEmpresa" class="oculto">
+          <input 
+            type="text" 
+            id="empresa" 
+            name="empresa" 
+            placeholder="Ingrese el nombre de su empresa"
+          >
+        </div>
 
-  <div id="campoUbicacion">
-    <select id="ubicacion" name="ubicacion" required>
-      <option value="" disabled selected>Seleccione ubicación</option>
-      <option value="bogota">Bogotá</option>
-      <option value="fuera">Fuera de Bogotá</option>
-    </select>
-  </div>
+        <div id="campoUbicacion">
+          <select id="ubicacion" name="ubicacion" required>
+            <option value="" disabled selected>Seleccione ubicación</option>
+            <option value="bogota">Bogotá</option>
+            <option value="fuera">Fuera de Bogotá</option>
+          </select>
+        </div>
 
-  <p id="precio" class="precio"></p>
+        <p id="precio" class="precio"></p>
 
-  <input type="hidden" id="vendedor" name="vendedor" value="sin_vendedor">
+        <input type="hidden" id="vendedor" name="vendedor" value="sin_vendedor">
 
-  <div class="checkbox">
-    <input type="checkbox" id="politica" required>
-    <label for="politica">Acepto la <a href="#">política de privacidad</a></label>
-  </div>
+        <div class="checkbox">
+          <input type="checkbox" id="politica" required>
+          <label for="politica">Acepto la <a href="#">política de privacidad</a></label>
+        </div>
 
-  <button type="button" id="btnPayu">Pagar con PayU (Sandbox)</button>
-</form>
+        <button type="button" id="btnPayu">Pagar con PayU (Sandbox)</button>
+      </form>
 
-<!-- Formulario oculto que se enviará al gateway de PayU -->
-<form id="formPayu" method="POST" action="https://sandbox.checkout.payulatam.com/ppp-web-gateway-payu/" style="display:none;">
-  <input name="merchantId" type="hidden" value="" />
-  <input name="accountId" type="hidden" value="" />
-  <input name="description" type="hidden" value="Pago de formulario CJI" />
-  <input name="referenceCode" type="hidden" id="referenceCode" value="" />
-  <input name="amount" type="hidden" id="amount" value="" />
-  <input name="tax" type="hidden" value="0" />
-  <input name="taxReturnBase" type="hidden" value="0" />
-  <input name="currency" type="hidden" value="COP" />
-  <input name="signature" type="hidden" id="signature" value="" />
-  <input name="buyerEmail" type="hidden" id="buyerEmail" value="" />
-  <input name="extra1" type="hidden" id="extra1" value="" />
-  <input name="extra2" type="hidden" id="extra2" value="" />
-  <input name="responseUrl" type="hidden" id="responseUrl" value="" />
-  <input name="confirmationUrl" type="hidden" id="confirmationUrl" value="" />
-</form>
-
-
-
+      <!-- Formulario oculto que se enviará al gateway de PayU -->
+      <form id="formPayu" method="POST" action="https://sandbox.checkout.payulatam.com/ppp-web-gateway-payu/" style="display:none;">
+        <input name="merchantId" type="hidden" value="" />
+        <input name="accountId" type="hidden" value="" />
+        <input name="description" type="hidden" value="Pago de formulario CJI" />
+        <input name="referenceCode" type="hidden" id="referenceCode" value="" />
+        <input name="amount" type="hidden" id="amount" value="" />
+        <input name="tax" type="hidden" value="0" />
+        <input name="taxReturnBase" type="hidden" value="0" />
+        <input name="currency" type="hidden" value="COP" />
+        <input name="signature" type="hidden" id="signature" value="" />
+        <input name="buyerEmail" type="hidden" id="buyerEmail" value="" />
+        <input name="extra1" type="hidden" id="extra1" value="" />
+        <input name="extra2" type="hidden" id="extra2" value="" />
+        <input name="responseUrl" type="hidden" id="responseUrl" value="" />
+        <input name="confirmationUrl" type="hidden" id="confirmationUrl" value="" />
+      </form>
     </div>
   </div>
 
