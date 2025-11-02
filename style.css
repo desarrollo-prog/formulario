@@ -47,10 +47,7 @@ body{
   color:var(--white);
   display:flex; flex-direction:column; justify-content:center;
   padding:56px; position:relative;
-  /* ✅ Ajuste para NO recortar la imagen del slider */
-  background-size: contain; 
-  background-repeat: no-repeat;
-  background-position:center;
+  background-size:cover; background-position:center;
   transition: background-image 1s ease-in-out;
 }
 .dots{ position:absolute; bottom:24px; left:50%; transform:translateX(-50%); display:flex; gap:8px;}
@@ -186,6 +183,10 @@ button[disabled]{ opacity:.6; cursor:not-allowed; filter:grayscale(.2); }
   input[type="text"], input[type="email"], input[type="tel"], select{ margin-bottom:12px; }
 }
 
+
+
+
+
 /* ===== Overrides para compactar altura ===== */
 body{ padding:16px 12px; }
 
@@ -223,6 +224,7 @@ button{
   padding:12px 18px;
   border-radius:14px;
 }
+
 
 /* ====== ALERTAS MODERNAS CENTRADAS ====== */
 .alerta-modal {
@@ -271,3 +273,4 @@ button{
   from { transform: scale(0.9); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
+
