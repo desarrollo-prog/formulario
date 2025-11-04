@@ -1,31 +1,42 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // ------------------- FUNCIÓN DE ALERTA MODERNA -------------------
+  // ------------------- POPUP MODERNO -------------------
   function mostrarAlerta(mensaje) {
-    // Evita duplicar modales
     if (document.querySelector('.alerta-modal')) return;
 
     const overlay = document.createElement('div');
     overlay.className = 'alerta-modal';
     overlay.innerHTML = `
-      <div class="alerta-contenido">
+      <div class="alerta-contenido" role="dialog" aria-modal="true" aria-live="assertive">
         <p>${mensaje}</p>
-        <button id="btnCerrarAlerta">Aceptar</button>
+        <button id="btnCerrarAlerta" type="button" autofocus>Aceptar</button>
       </div>
     `;
-    document.body.appendChild(overlay);
 
-    // Animación de entrada
-    setTimeout(() => overlay.classList.add('visible'), 10);
-
-    document.getElementById('btnCerrarAlerta').addEventListener('click', () => {
-      overlay.classList.remove('visible');
-      setTimeout(() => overlay.remove(), 300);
+    // Cerrar con clic fuera
+    overlay.addEventListener('click', (e) => {
+      if (e.target.classList.contains('alerta-modal')) cerrar();
     });
+    // Cerrar con ESC
+    const onKey = (e) => { if (e.key === 'Escape') cerrar(); };
+
+    function cerrar() {
+      overlay.classList.remove('visible');
+      document.removeEventListener('keydown', onKey);
+      setTimeout(() => overlay.remove(), 220);
+    }
+
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add('visible'));
+
+    document.getElementById('btnCerrarAlerta').addEventListener('click', cerrar);
+    document.addEventListener('keydown', onKey);
   }
 
-  // ------------------- SLIDER -------------------
-  const left = document.querySelector('.left');
-  const dots = document.querySelectorAll('.dot');
+  // ------------------- SLIDER (scope a .form-shell) -------------------
+  const shell = document.querySelector('.form-shell') || document;
+  const left  = shell ? shell.querySelector('.left') : null;
+  const dots  = shell ? shell.querySelectorAll('.dot') : [];
+
   const fondos = [
     "url('img/slider1.jpeg')",
     "url('img/slider2.png')",
@@ -75,27 +86,55 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputEmpresa   = document.getElementById('empresa');
   const inputTelefono  = document.getElementById('telefono');
 
+  // Placeholders
   if (inputNombre)   inputNombre.placeholder   = 'Ingrese su nombre completo';
   if (inputCorreo)   inputCorreo.placeholder   = 'Ingrese su correo electrónico';
   if (inputEmpresa)  inputEmpresa.placeholder  = 'Ingrese el nombre de su empresa';
   if (inputTelefono) inputTelefono.placeholder = 'Ingrese su número de celular';
 
+  // Requeridos base
+  if (inputNombre)   inputNombre.required = true;
+  if (inputCorreo)   inputCorreo.required = true;
+  if (inputTelefono) inputTelefono.required = true;
+  if (tipoPersona)   tipoPersona.required = true;
+  // ubicacion: requerida sólo si es empresa (se ajusta en actualizarPrecio)
+
+  // Mostrar/ocultar empresa + calcular precio
   function actualizarPrecio() {
     let precio = null;
 
     if (tipoPersona && tipoPersona.value === 'natural') {
-      campoUbicacion?.classList.add('oculto');
-      ubicacion?.removeAttribute('required');
-      campoEmpresa?.classList.add('oculto');
-      campoEmpresa?.classList.remove('mostrar');
-      inputEmpresa?.removeAttribute('required');
+      // Oculta ubicación
+      if (campoUbicacion) campoUbicacion.classList.add('oculto');
+      if (ubicacion)      ubicacion.removeAttribute('required');
+
+      // Oculta empresa (usar una sola clase de ocultamiento y quitar cualquier posible)
+      if (campoEmpresa) {
+        campoEmpresa.classList.remove('mostrar');
+        campoEmpresa.classList.add('hidden');   // <- oculta
+        campoEmpresa.classList.remove('oculto'); // limpiar por si quedó de antes
+      }
+      if (inputEmpresa) {
+        inputEmpresa.removeAttribute('required');
+        inputEmpresa.value = '';
+      }
+
+      // Precio PN
       precio = 846983;
+
     } else if (tipoPersona && tipoPersona.value === 'empresa') {
-      campoUbicacion?.classList.remove('oculto');
-      ubicacion?.setAttribute('required', 'required');
-      campoEmpresa?.classList.add('mostrar');
-      campoEmpresa?.classList.remove('oculto');
-      inputEmpresa?.setAttribute('required', 'required');
+      // Muestra ubicación
+      if (campoUbicacion) campoUbicacion.classList.remove('oculto');
+      if (ubicacion)      ubicacion.setAttribute('required', 'required');
+
+      // Muestra empresa (quitar cualquier clase que la mantenga oculta)
+      if (campoEmpresa) {
+        campoEmpresa.classList.add('mostrar');
+        campoEmpresa.classList.remove('hidden', 'oculto');
+      }
+      if (inputEmpresa) inputEmpresa.setAttribute('required', 'required');
+
+      // Precio según ubicación
       if (ubicacion) {
         if (ubicacion.value === 'bogota') precio = 763000;
         else if (ubicacion.value === 'fuera') precio = 769000;
@@ -115,8 +154,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   tipoPersona?.addEventListener('change', actualizarPrecio);
   ubicacion?.addEventListener('change', actualizarPrecio);
+
+  // Normaliza estado visual al cargar (por si el HTML trae 'hidden')
+  if (tipoPersona?.value === 'empresa') {
+    campoEmpresa?.classList.add('mostrar');
+    campoEmpresa?.classList.remove('hidden', 'oculto');
+    if (inputEmpresa) inputEmpresa.required = true;
+  } else {
+    campoEmpresa?.classList.remove('mostrar');
+    campoEmpresa?.classList.add('hidden');
+    if (inputEmpresa) inputEmpresa.required = false;
+  }
+
   actualizarPrecio();
 
+  // Detectar vendedor por URL
   function detectVendedorFromURL() {
     const query = (window.location.search || '').toLowerCase();
     const params = new URLSearchParams(query);
@@ -142,6 +194,36 @@ document.addEventListener('DOMContentLoaded', () => {
     return el;
   }
 
+  // ------------ Validación personalizada (sin globos nativos) ------------
+  function validarFormulario(form) {
+    if (!form) return false;
+
+    if (form.checkValidity()) return true;
+
+    // Buscar el primer inválido y mostrar popup
+    const primerInvalido = form.querySelector(':invalid');
+    let mensaje = 'Por favor completa los campos obligatorios.';
+
+    if (primerInvalido) {
+      const mapaLabels = {
+        nombre: 'tu nombre completo',
+        correo: 'tu correo electrónico',
+        telefono: 'tu número de celular',
+        tipoPersona: 'el tipo de cliente',
+        ubicacion: 'la ubicación',
+        empresa: 'el nombre de tu empresa'
+      };
+      const id = primerInvalido.id || primerInvalido.name;
+      if (id && mapaLabels[id]) mensaje = `Por favor ingresa ${mapaLabels[id]}.`;
+
+      primerInvalido.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => primerInvalido.focus({ preventScroll: true }), 300);
+    }
+
+    mostrarAlerta(mensaje);
+    return false;
+  }
+
   // ------------------- PAGO PAYU -------------------
   btnPayu?.addEventListener('click', () => {
     try {
@@ -159,7 +241,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const form = document.getElementById('formulario');
-      if (form && !form.reportValidity()) return;
+      // Validación con popup (sin reportValidity)
+      if (!validarFormulario(form)) return;
 
       const formData = new FormData(form);
       const empresa   = (formData.get('empresa')  || '').toString();
@@ -174,6 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      // Datos PayU (sandbox demo)
       const apiKey = '4Vj8eK4rloUd272L48hsrarnUA';
       const merchantId = '508029';
       const accountId = '512321';
@@ -193,6 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
       payuForm.setAttribute('action', 'https://sandbox.checkout.payulatam.com/ppp-web-gateway-payu/');
       payuForm.setAttribute('target', '_top');
 
+      // Campos básicos
       ensureHiddenInput(payuForm, 'merchantId').value = merchantId;
       ensureHiddenInput(payuForm, 'accountId').value = accountId;
       ensureHiddenInput(payuForm, 'description').value = 'Pago de formulario CJI';
@@ -206,25 +291,37 @@ document.addEventListener('DOMContentLoaded', () => {
       ensureHiddenInput(payuForm, 'extra1', 'extra1').value = tipo;
       ensureHiddenInput(payuForm, 'extra2', 'extra2').value = ubi;
 
-      ['extra3', 'extra4'].forEach((name) => {
+      // Limpiar extras previos
+      ['extra3', 'extra4', 'extra5'].forEach((name) => {
         payuForm.querySelectorAll(`input[name="${name}"]`).forEach((el) => el.remove());
       });
 
+      // extra3 JSON con empresa y teléfono
       const ex3 = document.createElement('input');
       ex3.type = 'hidden';
       ex3.name = 'extra3';
       ex3.value = JSON.stringify({ empresa, telefono });
       payuForm.appendChild(ex3);
 
+      // extra4 (teléfono)
       const ex4 = document.createElement('input');
       ex4.type = 'hidden';
       ex4.name = 'extra4';
       ex4.value = telefono;
       payuForm.appendChild(ex4);
 
+      // extra5 plano con el nombre de la empresa
+      const ex5 = document.createElement('input');
+      ex5.type = 'hidden';
+      ex5.name = 'extra5';
+      ex5.value = empresa;
+      payuForm.appendChild(ex5);
+
+      // URLs Apps Script con empresa y vendedor como querystring
       const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzS1RFbdfRCWTOKWlJJjkodAV7figCyCiqtjMsRiYDZ_72eEfw9jxJPt9C_I2CQ9aR9Jg/exec';
-      ensureHiddenInput(payuForm, 'responseUrl', 'responseUrl').value = `${APPS_SCRIPT_URL}?vendedor=${encodeURIComponent(vendedor)}`;
-      ensureHiddenInput(payuForm, 'confirmationUrl', 'confirmationUrl').value = `${APPS_SCRIPT_URL}?vendedor=${encodeURIComponent(vendedor)}`;
+      const qs = `?vendedor=${encodeURIComponent(vendedor)}&empresa=${encodeURIComponent(empresa)}`;
+      ensureHiddenInput(payuForm, 'responseUrl', 'responseUrl').value         = `${APPS_SCRIPT_URL}${qs}`;
+      ensureHiddenInput(payuForm, 'confirmationUrl', 'confirmationUrl').value = `${APPS_SCRIPT_URL}${qs}`;
 
       btnPayu.disabled = true;
       payuForm.submit();
