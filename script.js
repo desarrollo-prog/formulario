@@ -38,9 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const dots  = shell ? shell.querySelectorAll('.dot') : [];
 
   const fondos = [
-    "url('img/slider1.jpeg')",
-    "url('img/slider2.png')",
-    "url('img/slider1.jpeg')"
+    "url('img/slideruno.jpg')",
+    "url('img/sliderdos.jpg')",
+    "url('img/slidertres.jpg')"
   ];
 
   if (left && dots.length === fondos.length && fondos.length > 0) {
