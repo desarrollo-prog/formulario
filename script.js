@@ -40,7 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const fondos = [
     "url('img/slideruno.jpg')",
     "url('img/sliderdos.jpg')",
-    "url('img/slidertres.jpg')"
+    "url('img/slidertres.jpg')",
+    "url('img/slidercuatro.jpg')"
   ];
 
   if (left && dots.length === fondos.length && fondos.length > 0) {

@@ -365,7 +365,7 @@ button:active{ transform: translateY(1px) scale(.995); }
   margin-bottom: 14px;
 }
 
-/* Footer */
+/* Footer simple antiguo (texto gris bajo) */
 footer{
   text-align:center;
   color: var(--muted);
@@ -439,8 +439,6 @@ footer{
 #btnCerrarAlerta:hover{ filter: brightness(1.02); }
 #btnCerrarAlerta:active{ transform: translateY(1px) scale(.995); }
 
-
-
 #comentarios-google {
   max-width: 1100px;
   margin: 0 auto;
@@ -454,8 +452,7 @@ footer{
   text-align: center;
 }
 
-
-/* FOOTER */
+/* FOOTER nuevo verde */
 .footer {
   background-color:var(--verde);
   color: #fff;
@@ -532,10 +529,199 @@ footer{
   transform: scale(1.2);
 }
 
-/* RESPONSIVE */
+/* =========================
+   RESPONSIVE MEJORADO
+   ========================= */
+
+/* ====== TABLET / PANTALLAS MEDIAS ====== */
+@media (max-width: 992px) {
+
+  /* Encabezado */
+  .top-bar .container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+    padding: 8px 10px;
+  }
+
+  .top-bar .container img {
+    width: 130px;
+    max-width: 45%;
+  }
+
+  .top-bar .container span {
+    font-size: 14px;
+  }
+
+  /* Hero un poco más compacto */
+  .hero {
+    height: 70vh;
+    padding: 40px 0;
+  }
+
+  .hero-content h1 {
+    font-size: clamp(1.6rem, 3vw, 2.3rem);
+  }
+
+  .hero-content p {
+    margin-top: -80px;
+    margin-bottom: 18px;
+    font-size: 1.2rem;
+  }
+
+  .hero-benefits {
+    max-width: 90%;
+    font-size: 0.95rem;
+  }
+
+  /* Form shell más adaptable */
+  .container.form-shell {
+    width: min(95vw, 900px);
+    margin-top: -120px;
+  }
+
+  .form-shell {
+    height: auto;
+    min-height: 460px;
+  }
+
+  .form-shell .left {
+    padding: 40px;
+  }
+
+  .form-shell .right {
+    padding: 32px 24px;
+  }
+
+  .cards-conferencistas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .card-conf img {
+    height: 320px;
+  }
+}
+
+/* ====== MÓVIL ====== */
 @media (max-width: 768px) {
+
+  /* Hero más alto y cómodo en móvil */
+  .hero {
+    height: auto;
+    min-height: 80vh;
+    padding: 60px 0 40px;
+  }
+
+  .hero-content {
+    padding: 0 16px;
+  }
+
+  .hero-content p {
+    margin-top: -20px;
+    margin-bottom: 16px;
+    font-size: 1.05rem;
+  }
+
+  .hero-content h1 {
+    font-size: 1.5rem;
+  }
+
+  .hero-benefits li {
+    font-size: 0.9rem;
+    padding-left: 34px;
+  }
+
+  .hero-benefits li::before {
+    width: 22px;
+    height: 22px;
+  }
+
+  /* FORMULARIO: columna, full width */
+  .container.form-shell {
+    margin-top: -60px;
+    width: 94vw;
+  }
+
+  .form-shell {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .form-shell .left,
+  .form-shell .right {
+    width: 100%;
+    height: auto;
+  }
+
+  .form-shell .left {
+    min-height: 220px;
+    padding: 28px 20px;
+  }
+
+  .form-shell .dots {
+    bottom: 14px;
+  }
+
+  .form-shell .right {
+    padding: 24px 16px 30px;
+  }
+
+  .form-shell form {
+    box-shadow: none;
+    border-radius: 16px;
+    padding: 18px;
+  }
+
+  /* Contenido principal más estrecho */
+  .contenido,
+  .promocion,
+  .video,
+  .conferencistas,
+  .inversion {
+    width: 94vw;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .bloque-temario {
+    grid-template-columns: 1fr; /* Temario a una columna */
+  }
+
+  /* Conferencistas: una sola columna */
+  .cards-conferencistas {
+    grid-template-columns: 1fr;
+  }
+
+  .card-conf img {
+    height: 260px;
+  }
+
+  /* Inversión más pequeño en móvil */
+  .inversion p {
+    font-size: 2rem;
+  }
+
+  /* Video full width con menos radio */
+  .video-container {
+    border-radius: 16px;
+  }
+
+  /* Google Reviews */
+  #comentarios-google {
+    width: 94vw;
+    padding: 30px 10px;
+  }
+
+  #comentarios-google h2 {
+    font-size: 1.4rem;
+  }
+
+  /* Footer móvil */
   .footer {
     text-align: center;
+    padding: 40px 16px 30px;
   }
 
   .footer-container {
@@ -545,5 +731,59 @@ footer{
 
   .footer-column {
     max-width: 400px;
+  }
+
+  .footer-column h3 {
+    font-size: 0.95rem;
+  }
+
+  .footer-column p {
+    font-size: 0.85rem;
+  }
+
+  .social-icons a {
+    font-size: 1.4rem;
+    margin: 0 6px;
+  }
+}
+
+/* ====== MÓVIL PEQUEÑO ====== */
+@media (max-width: 480px) {
+
+  .hero-content h1 {
+    font-size: 1.3rem;
+  }
+
+  .hero-content p {
+    font-size: 0.95rem;
+  }
+
+  .hero-benefits li {
+    font-size: 0.85rem;
+  }
+
+  .form-shell .left {
+    min-height: 190px;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  select {
+    font-size: 13px;
+    padding: 12px 12px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 12px 14px;
+  }
+
+  .inversion p {
+    font-size: 1.6rem;
+  }
+
+  .card-conf img {
+    height: 220px;
   }
 }
