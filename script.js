@@ -312,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
       payuForm.appendChild(ex5);
 
       // URLs Apps Script (SOLO se disparan después del pago)
-      const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz60CzisxBEZpsArtzXq2s28xMyzQzdSfj4S170m-WIVoSd1KJDQz0lxGKzIlgyian3/exec';
+      const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwihDDSHz_lwxEh5BhM9Q2FCpw7QitdYFyHAheWGRvFR_iyPMIVgU4KUf0u-v7-SASE/exec';
       const qs = `?vendedor=${encodeURIComponent(vendedor)}&empresa=${encodeURIComponent(empresa)}`;
       ensureHiddenInput(payuForm, 'responseUrl', 'responseUrl').value         = `${APPS_SCRIPT_URL}${qs}`;
       ensureHiddenInput(payuForm, 'confirmationUrl', 'confirmationUrl').value = `${APPS_SCRIPT_URL}${qs}`;
