@@ -293,7 +293,8 @@ document.addEventListener('DOMContentLoaded', () => {
         tipo,
         ubicacion: ubi,
         vendedor,
-        valor: amount
+        valor: amount,
+        correo
       });
       payuForm.appendChild(ex3);
 
