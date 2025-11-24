@@ -32,8 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ------------------- SLIDER (scope a .form-shell) -------------------
   const shell = document.querySelector('.form-shell') || document;
-  const left  = shell ? shell.querySelector('.left') : null;
-  const dots  = shell ? shell.querySelectorAll('.dot') : [];
+  const left = shell ? shell.querySelector('.left') : null;
+  const dots = shell ? shell.querySelectorAll('.dot') : [];
 
   const fondos = [
     "url('img/slideruno.jpg')",
@@ -73,36 +73,40 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ------------------- FORMULARIO -------------------
-  const tipoPersona    = document.getElementById('tipoPersona');
-  const ubicacion      = document.getElementById('ubicacion');
+  const tipoPersona = document.getElementById('tipoPersona');
+  const ubicacion = document.getElementById('ubicacion');
   const campoUbicacion = document.getElementById('campoUbicacion');
-  const campoEmpresa   = document.getElementById('campoEmpresa');
-  const precioTexto    = document.getElementById('precio');
-  const btnPayu        = document.getElementById('btnPayu');
+  const campoEmpresa = document.getElementById('campoEmpresa');
+  const precioTexto = document.getElementById('precio');
+  const btnPayu = document.getElementById('btnPayu');
 
-  const inputNombre    = document.getElementById('nombre');
-  const inputCorreo    = document.getElementById('correo');
-  const inputEmpresa   = document.getElementById('empresa');
-  const inputTelefono  = document.getElementById('telefono');
+  const inputNombre = document.getElementById('nombre');
+  const inputCorreo = document.getElementById('correo');
+  const inputConfirmarCorreo = document.getElementById('confirmarCorreo');
+  const inputEmpresa = document.getElementById('empresa');
+  const inputTelefono = document.getElementById('telefono');
+  const inputHoneypot = document.getElementById('website_honeypot');
 
   // Placeholders
-  if (inputNombre)   inputNombre.placeholder   = 'Ingrese su nombre completo';
-  if (inputCorreo)   inputCorreo.placeholder   = 'Ingrese su correo electrónico';
-  if (inputEmpresa)  inputEmpresa.placeholder  = 'Ingrese el nombre de su empresa';
+  if (inputNombre) inputNombre.placeholder = 'Ingrese su nombre completo';
+  if (inputCorreo) inputCorreo.placeholder = 'Ingrese su correo electrónico';
+  if (inputConfirmarCorreo) inputConfirmarCorreo.placeholder = 'Confirme su correo electrónico';
+  if (inputEmpresa) inputEmpresa.placeholder = 'Ingrese el nombre de su empresa';
   if (inputTelefono) inputTelefono.placeholder = 'Ingrese su número de celular';
 
   // Requeridos base
-  if (inputNombre)   inputNombre.required = true;
-  if (inputCorreo)   inputCorreo.required = true;
+  if (inputNombre) inputNombre.required = true;
+  if (inputCorreo) inputCorreo.required = true;
+  if (inputConfirmarCorreo) inputConfirmarCorreo.required = true;
   if (inputTelefono) inputTelefono.required = true;
-  if (tipoPersona)   tipoPersona.required = true;
+  if (tipoPersona) tipoPersona.required = true;
 
   function actualizarPrecio() {
     let precio = null;
 
     if (tipoPersona && tipoPersona.value === 'natural') {
       if (campoUbicacion) campoUbicacion.classList.add('oculto');
-      if (ubicacion)      ubicacion.removeAttribute('required');
+      if (ubicacion) ubicacion.removeAttribute('required');
 
       if (campoEmpresa) {
         campoEmpresa.classList.remove('mostrar');
@@ -114,17 +118,25 @@ document.addEventListener('DOMContentLoaded', () => {
         inputEmpresa.value = '';
       }
 
+      // Remover expansión del formulario
+      const formShell = document.querySelector('.form-shell');
+      if (formShell) formShell.classList.remove('expanded');
+
       precio = 846983;
 
     } else if (tipoPersona && tipoPersona.value === 'empresa') {
       if (campoUbicacion) campoUbicacion.classList.remove('oculto');
-      if (ubicacion)      ubicacion.setAttribute('required', 'required');
+      if (ubicacion) ubicacion.setAttribute('required', 'required');
 
       if (campoEmpresa) {
         campoEmpresa.classList.add('mostrar');
         campoEmpresa.classList.remove('hidden', 'oculto');
       }
       if (inputEmpresa) inputEmpresa.setAttribute('required', 'required');
+
+      // Agregar expansión al formulario
+      const formShell = document.querySelector('.form-shell');
+      if (formShell) formShell.classList.add('expanded');
 
       if (ubicacion) {
         if (ubicacion.value === 'bogota') precio = 763000;
@@ -184,33 +196,66 @@ document.addEventListener('DOMContentLoaded', () => {
     return el;
   }
 
+  // ------------ Función de Sanitización ------------
+  function sanitizeInput(str) {
+    if (!str) return '';
+    const map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#x27;',
+      "/": '&#x2F;',
+    };
+    const reg = /[&<>"'/]/ig;
+    return str.replace(reg, (match) => (map[match]));
+  }
+
   // ------------ Validación personalizada ------------
   function validarFormulario(form) {
     if (!form) return false;
 
-    if (form.checkValidity()) return true;
-
-    const primerInvalido = form.querySelector(':invalid');
-    let mensaje = 'Por favor completa los campos obligatorios.';
-
-    if (primerInvalido) {
-      const mapaLabels = {
-        nombre: 'tu nombre completo',
-        correo: 'tu correo electrónico',
-        telefono: 'tu número de celular',
-        tipoPersona: 'el tipo de cliente',
-        ubicacion: 'la ubicación',
-        empresa: 'el nombre de tu empresa'
-      };
-      const id = primerInvalido.id || primerInvalido.name;
-      if (id && mapaLabels[id]) mensaje = `Por favor ingresa ${mapaLabels[id]}.`;
-
-      primerInvalido.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      setTimeout(() => primerInvalido.focus({ preventScroll: true }), 300);
+    // 1. Honeypot check (Bot protection)
+    if (inputHoneypot && inputHoneypot.value !== '') {
+      console.warn('Bot detected via honeypot.');
+      return false; // Silently fail
     }
 
-    mostrarAlerta(mensaje);
-    return false;
+    // 2. Browser validity check
+    if (!form.checkValidity()) {
+      const primerInvalido = form.querySelector(':invalid');
+      let mensaje = 'Por favor completa los campos obligatorios.';
+
+      if (primerInvalido) {
+        const mapaLabels = {
+          nombre: 'tu nombre completo',
+          correo: 'tu correo electrónico',
+          confirmarCorreo: 'la confirmación del correo',
+          telefono: 'tu número de celular',
+          tipoPersona: 'el tipo de cliente',
+          ubicacion: 'la ubicación',
+          empresa: 'el nombre de tu empresa'
+        };
+        const id = primerInvalido.id || primerInvalido.name;
+        if (id && mapaLabels[id]) mensaje = `Por favor ingresa ${mapaLabels[id]}.`;
+
+        primerInvalido.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => primerInvalido.focus({ preventScroll: true }), 300);
+      }
+      mostrarAlerta(mensaje);
+      return false;
+    }
+
+    // 3. Custom Logic: Email Match
+    if (inputCorreo && inputConfirmarCorreo) {
+      if (inputCorreo.value.trim().toLowerCase() !== inputConfirmarCorreo.value.trim().toLowerCase()) {
+        mostrarAlerta('Los correos electrónicos no coinciden. Por favor verifícalos.');
+        inputConfirmarCorreo.focus();
+        return false;
+      }
+    }
+
+    return true;
   }
 
   // ------------------- PAGO PAYU -------------------
@@ -233,27 +278,28 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!validarFormulario(form)) return;
 
       const formData = new FormData(form);
-      const empresa   = (formData.get('empresa')  || '').toString();
-      const correo    = (formData.get('correo')   || '').toString();
-      const telefono  = (formData.get('telefono') || '').toString();
-      const persona   = (formData.get('nombre')   || '').toString();
-      const tipo      = tipoPersona?.value || '';
-      const ubi       = ubicacion?.value || 'N/A';
-      const vendedor  = inputVendedor?.value || 'sin_vendedor';
+      // Sanitize inputs
+      const empresa = sanitizeInput((formData.get('empresa') || '').toString());
+      const correo = sanitizeInput((formData.get('correo') || '').toString());
+      const telefono = sanitizeInput((formData.get('telefono') || '').toString());
+      const persona = sanitizeInput((formData.get('nombre') || '').toString());
+      const tipo = tipoPersona?.value || '';
+      const ubi = ubicacion?.value || 'N/A';
+      const vendedor = inputVendedor?.value || 'sin_vendedor';
 
       if (typeof CryptoJS === 'undefined' || !CryptoJS.MD5) {
         mostrarAlerta('No se pudo inicializar la librería de firma (CryptoJS). Revisa tu conexión.');
         return;
       }
 
-      const apiKey     = '4Vj8eK4rloUd272L48hsrarnUA';
+      const apiKey = '4Vj8eK4rloUd272L48hsrarnUA';
       const merchantId = '508029';
-      const accountId  = '512321';
-      const currency   = 'COP';
+      const accountId = '512321';
+      const currency = 'COP';
       const referenceCode = `CJI_${Date.now()}_${vendedor}`;
-      const amount     = String(valor);
+      const amount = String(valor);
       const rawSignature = `${apiKey}~${merchantId}~${referenceCode}~${amount}~${currency}`;
-      const signature  = CryptoJS.MD5(rawSignature).toString();
+      const signature = CryptoJS.MD5(rawSignature).toString();
 
       const payuForm = document.getElementById('formPayu');
       if (!payuForm) {
@@ -294,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ubicacion: ubi,
         vendedor,
         valor: amount,
-        correo        
+        correo
       });
       payuForm.appendChild(ex3);
 
@@ -315,7 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // URLs Apps Script (SOLO se disparan después del pago)
       const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwbuqK_4f59bXzMEMMGzoX63Nx918Ec5tz6OQkK6JjTC-KuNAKwVwtFPUYgPoUAJXld/exec';
       const qs = `?vendedor=${encodeURIComponent(vendedor)}&empresa=${encodeURIComponent(empresa)}`;
-      ensureHiddenInput(payuForm, 'responseUrl', 'responseUrl').value         = `${APPS_SCRIPT_URL}${qs}`;
+      ensureHiddenInput(payuForm, 'responseUrl', 'responseUrl').value = `${APPS_SCRIPT_URL}${qs}`;
       ensureHiddenInput(payuForm, 'confirmationUrl', 'confirmationUrl').value = `${APPS_SCRIPT_URL}${qs}`;
 
       btnPayu.disabled = true;
