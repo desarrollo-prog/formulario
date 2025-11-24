@@ -282,7 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
         payuForm.querySelectorAll(`input[name="${name}"]`).forEach((el) => el.remove());
       });
 
-      // extra3: JSON completo para que Apps Script tenga todos los datos
+      // extra3: JSON completo para que Apps Script tenga todos los datos (AHORA INCLUYE CORREO)
       const ex3 = document.createElement('input');
       ex3.type = 'hidden';
       ex3.name = 'extra3';
@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ubicacion: ubi,
         vendedor,
         valor: amount,
-        correo
+        correo        
       });
       payuForm.appendChild(ex3);
 
